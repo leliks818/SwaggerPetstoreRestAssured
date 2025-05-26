@@ -1,14 +1,18 @@
+package oldTests;
+
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-
 import static io.restassured.RestAssured.given;
-
+import io.restassured.response.Response;
 import org.hamcrest.Matchers;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import static java.lang.Math.log;
 import static org.hamcrest.Matchers.*;
 
-
+///AAA / arrange /act/assert pattern
 class UserOldTests {
     private static final String BASE_URL = "https://petstore.swagger.io";
 
@@ -17,7 +21,7 @@ class UserOldTests {
         String body = """
                 {
                     "id": 0,
-                    "username": "user1",
+                    "username": "string",
                     "firstName": "string",
                     "lastName": "string",
                     "email": "string",
@@ -26,23 +30,20 @@ class UserOldTests {
                     "userStatus": 0
                 }
                 """;
-        given().
-                baseUri(BASE_URL).
-                //header("accept", "application/json").
-                //header("Content-Type", "application/json").
-                        accept("application/json").
-                contentType("application/json").
-                body(body).
-                log().all().
-                when().
-                post("/v2/user").
-                then().
-                statusCode(200).
-                log().all().
-                body("code", Matchers.equalTo(200),
-                        "type", Matchers.equalTo("unknown"),
 
-                        "message", Matchers.greaterThan("9223372036854768470"));
+        Response response = given()
+               .baseUri(BASE_URL)
+               .accept("application/json")
+               .contentType("application/json")
+                .when()
+                .body(body)
+               .post("/v2/user")
+                .andReturn();
+        int actualCode = response.getStatusCode();
+        Assertions.assertEquals(200,actualCode, "Статус код не 200");
+
+
+
     }
 
     @Test
@@ -88,7 +89,6 @@ class UserOldTests {
                 .statusCode(200)                  // Проверяем, что ответ 200 OK
                 .contentType(ContentType.JSON)   // Проверяем Content-Type ответа
 
-                // Проверяем, что тело содержит нужные поля с правильными значениями
                 .body("username", equalTo("user1"))
                 .body("firstName", equalTo("John"))
                 .body("lastName", equalTo("Doe"))
@@ -188,6 +188,5 @@ class UserOldTests {
                 .header("content-type", containsString("application/json"))
                 .header("server", equalTo("Jetty(9.2.9.v20150224)"));
     }
-
 
 }

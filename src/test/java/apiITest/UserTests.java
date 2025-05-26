@@ -1,4 +1,4 @@
-package APITest;
+package apiITest;
 import org.junit.jupiter.api.Test;
 
 import controller.UserController;
@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 
 import static constants.CommonConstants.*;
+import static testData.TestData.*;
 
 class UserTests {
 
@@ -25,7 +26,9 @@ class UserTests {
         Response response = userController.createUser(DEFAULT_USER);
 
         Assertions.assertEquals(200, response.statusCode());
-        ApiResponse apiResponse = response.as(ApiResponse.class);
+        ApiResponse apiResponse = response.as(ApiResponse.class);// десериализует (преобразует) JSON-ответ
+        // от сервера в объект указанного класса (ApiResponse).
+
         Assertions.assertEquals(200, apiResponse.getCode());
         Assertions.assertEquals("unknown", apiResponse.getType());
         Assertions.assertTrue(apiResponse.getMessage().matches("\\d+"));
@@ -33,7 +36,7 @@ class UserTests {
 
     @Test
     void updateUserTest() {
-        // Создаём пользователя, чтобы можно было его обновить
+        // Создаём пользователя, чтобы его обновить
         userController.createUser(UPDATE_USER);
 
         Response response = userController.updateUser(UPDATE_USER.getUsername(), UPDATE_USER);
@@ -55,7 +58,7 @@ class UserTests {
         User userFromResponse = response.getBody().as(User.class);
         Assertions.assertTrue(userFromResponse.getId() > 0, "User ID should be greater than 0");
 
-        // Проверяем остальные поля, которые должны совпадать с DEFAULT_USER
+        // остальные поля, которые должны совпадать
         Assertions.assertEquals(DEFAULT_USER.getUsername(), userFromResponse.getUsername(), "Username is wrong");
         Assertions.assertEquals(DEFAULT_USER.getFirstName(), userFromResponse.getFirstName(), "First name is wrong");
         Assertions.assertEquals(DEFAULT_USER.getLastName(), userFromResponse.getLastName(), "Last name is wrong");
@@ -80,7 +83,6 @@ class UserTests {
 
     @Test
     void deleteUserTest() {
-        // Создаём пользователя, чтобы можно было удалить
         userController.createUser(DEFAULT_USER);
 
         Response response = userController.deleteUser(DEFAULT_USER.getUsername());

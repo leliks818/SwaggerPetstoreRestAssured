@@ -1,19 +1,51 @@
 plugins {
-    id("java")
+    id 'java'
+    id("io.qameta.allure") version "2.12.0"
 }
 
-group = "org.example"
-version = "1.0-SNAPSHOT"
+group = 'chursov'
+version = '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
 }
-
-dependencies {
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
+ext {
+    lombokVersion = '1.18.36'
 }
 
-tasks.test {
+dependencies {
+    // --- JUnit 5 ---
+    testImplementation platform('org.junit:junit-bom:5.10.0') // BOM: управление версиями JUnit
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0' // API для написания тестов JUnit 5
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0' // Движок выполнения JUnit 5-тестов
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher' // Запуск тестов (например, из IDE или CI)
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.12.1' // Параметризованные тесты (JUnit 5)
+
+    // --- Rest Assured ---
+    testImplementation 'io.rest-assured:rest-assured:5.5.1' // Тестирование REST API
+
+    // --- Allure Reports ---
+    testImplementation 'io.qameta.allure:allure-junit5:2.29.1' // Интеграция Allure с JUnit 5
+    implementation 'io.qameta.allure:allure-java-commons:2.29.1' // Общие классы для Allure
+    testImplementation 'io.qameta.allure:allure-rest-assured:2.29.1' // Интеграция Allure с Rest Assured
+
+    // --- Jackson (JSON парсинг) ---
+    testImplementation 'com.fasterxml.jackson.core:jackson-core:2.19.0' // Основной JSON-парсер
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.19.0' // Преобразование JSON <-> Java объекты
+
+    // --- AssertJ (удобные ассерты) ---
+    testImplementation 'org.assertj:assertj-core:3.27.3' // Библиотека для удобных проверок в тестах
+
+    // --- Awaitility (ожидание условий) ---
+    testImplementation 'org.awaitility:awaitility:4.2.0' // Ожидание условий в асинхронных тестах
+
+    // --- Lombok ---
+    compileOnly "org.projectlombok:lombok:${lombokVersion}" // Аннотации Lombok (например, @Getter, @Setter)
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}" // Для генерации кода Lombok при сборке
+    testCompileOnly "org.projectlombok:lombok:${lombokVersion}" // Lombok в тестах
+    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}" // Генерация кода Lombok в тестах
+}
+
+test {
     useJUnitPlatform()
 }
