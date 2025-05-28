@@ -2,6 +2,7 @@ package testData;
 
 import models.User;
 
+
 import java.util.List;
 import java.util.Map;
 
@@ -11,8 +12,21 @@ public class TestData {
             0, "user1", "John", "Doe", "john.doe@email.com",
             "pass123", "1234567890", 1);
 
+//    //mozhno peredavat chastichno i ne obyazatelno po poradky
+//    public static final UserBuilder DEFAULT_USER2 = UserBuilder.builder()
+//            .id(0)
+//            .username("string")
+//            .firstName("string")
+//            .lastName("string")
+//            .email("string")
+//            .password("string")
+//            .phone("string")
+//            .userStatus(1)
+//            .build();
+
+
     public static final User UPDATE_USER = new User(
-            0, "string2", "Updated", "User",
+            0, "string2", "Updated", "models/User",
             "updated@example.com", "newpass123", "2222222222", 0);
 
 

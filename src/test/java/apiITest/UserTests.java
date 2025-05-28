@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 
 
-import static constants.CommonConstants.*;
 import static testData.TestData.*;
 
 class UserTests {
@@ -51,14 +50,12 @@ class UserTests {
 
     @Test
     void getUserTest() {
-        // Получаем пользователя с API по username
         Response response = userController.getUser(DEFAULT_USER);
         Assertions.assertEquals(200, response.statusCode(), "Incorrect response code");
 
         User userFromResponse = response.getBody().as(User.class);
         Assertions.assertTrue(userFromResponse.getId() > 0, "User ID should be greater than 0");
 
-        // остальные поля, которые должны совпадать
         Assertions.assertEquals(DEFAULT_USER.getUsername(), userFromResponse.getUsername(), "Username is wrong");
         Assertions.assertEquals(DEFAULT_USER.getFirstName(), userFromResponse.getFirstName(), "First name is wrong");
         Assertions.assertEquals(DEFAULT_USER.getLastName(), userFromResponse.getLastName(), "Last name is wrong");
@@ -96,7 +93,6 @@ class UserTests {
 
     @Test
     void loginUserTest() {
-        // Создаём пользователя для логина
         userController.createUser(DEFAULT_USER);
 
         Response response = userController.loginUser(DEFAULT_USER.getUsername(), DEFAULT_USER.getPassword());
