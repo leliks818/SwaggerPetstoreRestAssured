@@ -28,13 +28,6 @@ public class FluentUserController {
                 .filter(new AllureRestAssured());
     }
 
-//    @Step("Создание пользователя")
-//    public HttpResponse createUser(User user) {
-//        Response response = given(requestSpecification)
-//                .body(user)
-//                .post(USER_ENDPOINT);
-//        return new HttpResponse(response);
-//    }
     @Step("Создание пользователя")
     public HttpResponse createUser(User user) {
         Response response = given(requestSpecification)
