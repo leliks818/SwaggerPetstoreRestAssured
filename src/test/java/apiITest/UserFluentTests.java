@@ -27,7 +27,6 @@ public class UserFluentTests {
     @Test
     @DisplayName("Создание пользователя с сохранением ID и проверкой как числа")
     public void createUserTest() {
-        // Создание пользователя и получение ID из ответа
         String expectedId = userController.createUser(DEFAULT_USER)
                 .statusCodeIs(200)
                 .jsonValueIs("code", 200)
@@ -40,7 +39,6 @@ public class UserFluentTests {
                 .jsonValueIs("username", DEFAULT_USER.getUsername())
                 .jsonValueIs("email", DEFAULT_USER.getEmail());
     }
-
 
     @Test
     void createUsersWithListTest() {

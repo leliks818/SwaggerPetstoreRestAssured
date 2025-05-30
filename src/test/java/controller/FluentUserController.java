@@ -1,5 +1,6 @@
 package controller;
 
+import constants.CommonConstants;
 import io.qameta.allure.Step;
 import io.qameta.allure.restassured.AllureRestAssured;
 
@@ -27,70 +28,77 @@ public class FluentUserController {
                 .filter(new AllureRestAssured());
     }
 
+//    @Step("Создание пользователя")
+//    public HttpResponse createUser(User user) {
+//        Response response = given(requestSpecification)
+//                .body(user)
+//                .post(USER_ENDPOINT);
+//        return new HttpResponse(response);
+//    }
     @Step("Создание пользователя")
-    public HttpResponseUser createUser(User user) {
+    public HttpResponse createUser(User user) {
         Response response = given(requestSpecification)
                 .body(user)
-                .post(USER_ENDPOINT);
-        return new HttpResponseUser(response);
+                .post(CommonConstants.USER_ENDPOINT); // Лучше указывать явно откуда
+        return new HttpResponse(response);
     }
 
     @Step("Создание пользователей через список (createWithList)")
-    public HttpResponseUser createUsersWithList(List<User> users) {
+    public HttpResponse createUsersWithList(List<User> users) {
         Response response = given(requestSpecification)
                 .body(users)
                 .post(USER_ENDPOINT + "/createWithList");
-        return new HttpResponseUser(response);
+        return new HttpResponse(response);
     }
 
     @Step("Создание пользователей через массив (createWithArray)")
-    public HttpResponseUser createUsersWithArray(List<User> users) {
+    public HttpResponse createUsersWithArray(List<User> users) {
         Response response = given(requestSpecification)
                 .body(users)
                 .post(USER_ENDPOINT + "/createWithArray");
-        return new HttpResponseUser(response);
+        return new HttpResponse(response);
     }
 
     @Step("Получение пользователя по username: {username}")
-    public HttpResponseUser getUserByUsername(String username) {
+    public HttpResponse getUserByUsername(String username) {
         Response response = given(requestSpecification)
                 .get(USER_ENDPOINT + "/" + username);
-        return new HttpResponseUser(response);
+        return new HttpResponse(response);
     }
 
     @Step("Получение пользователя из объекта User: {user.username}")
-    public HttpResponseUser getUser(User user) {
+    public HttpResponse getUser(User user) {
         return getUserByUsername(user.getUsername());
     }
 
     @Step("Обновление пользователя по username: {username}")
-    public HttpResponseUser updateUser(String username, User updatedUser) {
+    public HttpResponse updateUser(String username, User updatedUser) {
         Response response = given(requestSpecification)
                 .body(updatedUser)
                 .put(USER_ENDPOINT + "/" + username);
-        return new HttpResponseUser(response);
+        return new HttpResponse(response);
     }
 
     @Step("Удаление пользователя")
-    public HttpResponseUser deleteUser(String username) {
+    public HttpResponse deleteUser(String username) {
         Response response = given(requestSpecification)
                 .delete(USER_ENDPOINT + "/" + username);
-        return new HttpResponseUser(response);
+        return new HttpResponse(response);
     }
 
     @Step("Логин пользователя")
-    public HttpResponseUser loginUser(String username, String password) {
+    public HttpResponse loginUser(String username, String password) {
         Response response = given(requestSpecification)
                 .queryParam("username", username)
                 .queryParam("password", password)
                 .get(USER_ENDPOINT + "/login");
-        return new HttpResponseUser(response);
+        return new HttpResponse(response);
     }
 
     @Step("Логаут пользователя")
-    public HttpResponseUser logoutUser() {
+    public HttpResponse logoutUser() {
         Response response = given(requestSpecification)
                 .get(USER_ENDPOINT + "/logout");
-        return new HttpResponseUser(response);
+        return new HttpResponse(response);
     }
 }

@@ -1,29 +1,22 @@
 package testData;
 
+import models.pet.Category;
+import models.pet.Pet;
+import models.pet.Status;
 import models.User;
+import models.pet.Tags;
 
 
 import java.util.List;
+
 import java.util.Map;
+
 
 public class TestData {
 
     public static final User DEFAULT_USER = new User(
             0, "user1", "John", "Doe", "john.doe@email.com",
             "pass123", "1234567890", 1);
-
-//    //mozhno peredavat chastichno i ne obyazatelno po poradky
-//    public static final UserBuilder DEFAULT_USER2 = UserBuilder.builder()
-//            .id(0)
-//            .username("string")
-//            .firstName("string")
-//            .lastName("string")
-//            .email("string")
-//            .password("string")
-//            .phone("string")
-//            .userStatus(1)
-//            .build();
-
 
     public static final User UPDATE_USER = new User(
             0, "string2", "Updated", "models/User",
@@ -41,5 +34,36 @@ public class TestData {
                 "Accept", "application/json"
         );
     }
+
+//    public static final Pet DEFAULT_PET = new Pet(
+//            133,
+//            new Category(2, "cat"),
+//            "dog",
+//            List.of("Url"),
+//            List.of(new models.pet.Tag(2, "cat")),
+//            Status.AVAILABLE
+//    );
+//
+//    public static final Pet PET_TO_UPDATE;
+//
+//    static {
+//        PET_TO_UPDATE = new Pet();
+//        PET_TO_UPDATE.setId(134);
+//        PET_TO_UPDATE.setStatus(Status.AVAILABLE);
+
+
+    public static final Pet DEFAULT_PET = Pet.builder()
+            .id(132)
+            .category(Category.builder().id(2).name("cat").build())
+            .name("dog")
+            .photoUrls(List.of("Url"))
+            .tags(List.of(Tags.builder().id(2).name("cat").build()))
+            .status(Status.AVAILABLE)
+            .build();
+
+    public static final Pet PET_UPDATE = Pet.builder()
+            .id(1349)
+            .status(Status.AVAILABLE)
+            .build();
 
 }

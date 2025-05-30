@@ -1,20 +1,24 @@
 package controller;
 
 import io.qameta.allure.Step;
+import io.restassured.internal.RestAssuredResponseOptionsGroovyImpl;
 import io.restassured.response.Response;
 
 
+import java.util.List;
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-public class HttpResponseUser {
+public class HttpResponse {
     private final Response response;
 
-    public HttpResponseUser(Response response) {
+    public HttpResponse(Response response) {
         this.response = response;
     }
 
     @Step("Проверка кода ответа: {expectedCode}")
-    public HttpResponseUser statusCodeIs(int expectedCode) {
+    public HttpResponse statusCodeIs(int expectedCode) {
         int actualCode = response.getStatusCode();
         System.out.println("Status Code: " + actualCode);
         assertEquals(expectedCode, actualCode);
@@ -25,7 +29,7 @@ public class HttpResponseUser {
     }
 
     @Step("Проверка значения JSON поля '{path}' на равенство '{expectedValue}'")
-    public HttpResponseUser jsonValueIs(String path, Object expectedValue) {
+    public HttpResponse jsonValueIs(String path, Object expectedValue) {
         Object actual = response.jsonPath().get(path);
         System.out.println("RESPONSE: " + response.asString());
         System.out.println("Extracted [" + path + "] = " + actual);
@@ -34,19 +38,8 @@ public class HttpResponseUser {
         return this;
     }
 
-//    @Step("Проверка значения JSON поля '{path}' на соответствие регулярному выражению '{regex}'")
-//    public HttpResponseUser jsonValueMatches(String path, String regex) {
-//        String actual = response.jsonPath().getString(path);
-//        System.out.println("RESPONSE: " + response.asString());
-//        System.out.println("Extracted [" + path + "] = " + actual);
-//        assertNotNull(actual, "Значение поля '" + path + "' равно null");
-//        boolean matches = Pattern.matches(regex, actual);
-//        assertTrue(matches, "Значение поля '" + path + "' не соответствует регулярному выражению '" + regex + "': " + actual);
-//        return this;
-//    }
-
     @Step("Проверка, что JSON поле '{path}' содержит подстроку '{expectedSubstring}'")
-    public HttpResponseUser jsonValueContains(String path, String expectedSubstring) {
+    public HttpResponse jsonValueContains(String path, String expectedSubstring) {
         String actual = response.jsonPath().getString(path);
         assertNotNull(actual);
         assertTrue(actual.contains(expectedSubstring));
@@ -54,19 +47,20 @@ public class HttpResponseUser {
     }
 
     @Step("Проверка, что JSON поле '{path}' не null")
-    public HttpResponseUser jsonValueNotNull(String path) {
+    public HttpResponse jsonValueNotNull(String path) {
         assertNotNull(response.jsonPath().get(path));
         return this;
     }
 
     @Step("Проверка, что значение JSON поля '{path}' больше {number}")
-    public HttpResponseUser jsonValueBiggerThan(String path, int number) {
-        int value = response.jsonPath().getInt(path);
-        assertTrue(value > number);
-        return this;
-    }
+        public HttpResponse jsonValueBiggerThan(String path, long number) {
+            long actual = response.jsonPath().getLong(path);
+            assertTrue(actual > number);
+            return this;
+        }
+
     @Step("Проверка, что значение JSON поля '{path}' больше {number}")
-    public HttpResponseUser jsonValueIsGreaterThan(String path, long number) {
+    public HttpResponse jsonValueIsGreaterThan(String path, long number) {
         // Получаем значение как Long (поддержка больших чисел)
         Long actualValue = response.jsonPath().getLong(path);
         System.out.println("Extracted [" + path + "] = " + actualValue);
@@ -77,9 +71,24 @@ public class HttpResponseUser {
     }
 
     @Step("Лог тела ответа")
-    public HttpResponseUser logBody() {
+    public HttpResponse logBody() {
         System.out.println(response.getBody().asPrettyString());
         return this;
     }
+    public Response getResponse() {
+        return response;
+    }
 
+    public String getBody() {
+        return response.asString();
+    }
+    public List<Map<String, Object>> getJsonList(String path) {
+        return response.jsonPath().getList(path);
+    }
+
+    public HttpResponse bodyFieldEquals(String fieldName, long expectedValue) {
+        Number actualValue = response.jsonPath().get(fieldName);
+        assertEquals(expectedValue, actualValue.longValue());
+        return this;
+    }
 }

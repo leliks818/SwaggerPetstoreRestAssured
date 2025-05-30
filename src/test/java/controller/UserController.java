@@ -57,7 +57,6 @@ public class UserController {
                 .put(USER_ENDPOINT + "/{username}", username);
     }
 
-
     @Step("Удаление пользователя")
     public Response deleteUser(String username) {
         return given(requestSpecification)
