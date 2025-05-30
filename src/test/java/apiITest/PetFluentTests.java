@@ -30,7 +30,6 @@ public class PetFluentTests {
     }
 
     @Test
-
     @DisplayName("Добавление нового питомца ")
     public void testAddPet() {
         HttpResponse response = petController.addPet(DEFAULT_PET);
@@ -38,44 +37,46 @@ public class PetFluentTests {
                 .jsonValueIs("name", DEFAULT_PET.getName())
                 .jsonValueIs("status", DEFAULT_PET.getStatus());
     }
-
     @Test
     @DisplayName("Обновление существующего питомца")
     public void testUpdatePet() {
-        HttpResponse addResponse = petController.addPet(DEFAULT_PET);
-        addResponse.statusCodeIs(200);
+        HttpResponse addResponse = petController.addPet(DEFAULT_PET)
+                .statusCodeIs(200);
 
         Long petId = Long.parseLong(addResponse.getJsonValue("id"));
-        System.out.println("Добавлен питомец с id: " + petId);
         Pet petUpdate = Pet.builder()
                 .id(petId)
                 .status(Status.AVAILABLE)
                 .build();
-        HttpResponse updateResponse = petController.updatePet(petUpdate);
-        updateResponse.statusCodeIs(200);
 
-        String status = updateResponse.getJsonValue("status");
-        Assertions.assertEquals(Status.AVAILABLE.name().toLowerCase(), status.toLowerCase());
+        HttpResponse updateResponse = petController.updatePet(petUpdate)
+                .statusCodeIs(200)
+                .jsonValueIs("status", Status.AVAILABLE.name());
 
         Long updatedId = Long.parseLong(updateResponse.getJsonValue("id"));
-        Assertions.assertEquals(petId, updatedId);
+        assertEquals(petId, updatedId);
     }
 
     @Test
     @DisplayName("Поиск питомцев по статусу available с проверкой тела ответа")
     void testFindPetsByStatusAvailable() {
-         petController.addPet(DEFAULT_PET).statusCodeIs(200);
+        petController.addPet(DEFAULT_PET)
+                .statusCodeIs(200);
+
         System.out.println(DEFAULT_PET.getStatus());
-        HttpResponse response = petController.findPetsByStatus("available");
-        response.statusCodeIs(200);
-        // Извлекаем список питомцев из JSON-ответа
+
+        HttpResponse response = petController.findPetsByStatus("available")
+                .statusCodeIs(200);
+
         List<Map<String, Object>> pets = response.getJsonList("");
         assertFalse(pets.isEmpty(), "Список питомцев не должен быть пустым");
-        // Проверяем, что у всех найденных питомцев статус "available"
+
         for (Map<String, Object> pet : pets) {
             assertEquals("available", pet.get("status"), "Статус питомца должен быть 'available'");
         }
     }
+
+
     @Test
     @DisplayName("Получение питомца по ID ")
     void testGetPetById() {
@@ -98,5 +99,4 @@ public class PetFluentTests {
                 .statusCodeIs(200)
                 .jsonValueIs("code", 200);
     }
-
 }
