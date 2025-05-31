@@ -1,11 +1,12 @@
 package apiITest;
 
-import controller.FluentPetController;
+import controller.pet.FluentPetController;
 import controller.HttpResponse;
 import models.pet.Pet;
 import models.pet.Status;
 import org.junit.jupiter.api.*;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +17,6 @@ import static testData.TestData.*;
 public class PetFluentTests {
 
     private FluentPetController petController;
-    private static final String API_KEY = "special-key";
 
     @BeforeEach
     public void setUp() {
@@ -37,6 +37,7 @@ public class PetFluentTests {
                 .jsonValueIs("name", DEFAULT_PET.getName())
                 .jsonValueIs("status", DEFAULT_PET.getStatus());
     }
+
     @Test
     @DisplayName("Обновление существующего питомца")
     public void testUpdatePet() {
@@ -63,8 +64,6 @@ public class PetFluentTests {
         petController.addPet(DEFAULT_PET)
                 .statusCodeIs(200);
 
-        System.out.println(DEFAULT_PET.getStatus());
-
         HttpResponse response = petController.findPetsByStatus("available")
                 .statusCodeIs(200);
 
@@ -75,7 +74,6 @@ public class PetFluentTests {
             assertEquals("available", pet.get("status"), "Статус питомца должен быть 'available'");
         }
     }
-
 
     @Test
     @DisplayName("Получение питомца по ID ")
@@ -99,4 +97,41 @@ public class PetFluentTests {
                 .statusCodeIs(200)
                 .jsonValueIs("code", 200);
     }
+    @Test
+    void apiUploadTest() {
+        // Путь к изображению
+        File file = new File("src/test/resources/pet.jpg");
+
+        HttpResponse.uploadImage(file)
+                .statusCodeIs(200)
+                .bodyFieldEquals("code", 200L)
+                .jsonValueContains("message", "pet.jpg");
+    }
 }
+
+//    @Test
+//    void apiUploadTest() {
+//        // URL API для загрузки изображения
+//        String apiUrl = "https://petstore.swagger.io/v2/pet/1/uploadImage";
+//
+//        // Создаем объект File, который указывает на изображение для загрузки
+//        // Путь к файлу
+//        File file = new File("src/test/resources/pet.jpg");
+//
+//        // Отправляем POST-запрос на API с изображением
+//        Response response =
+//                given()
+//                        .header("accept", "application/json")
+//                        .contentType("multipart/form-data")
+//                        .multiPart("file", file, "image/jpeg") // Указываем тип содержимого файла
+//                        .when()
+//                        .post(apiUrl)
+//                        .then()
+//                        .statusCode(200) // Проверяем, что запрос успешен
+//                        .extract()
+//                        .response();
+//
+//        // Выводим ответ сервера
+//        System.out.println("Response: " + response.asString());
+//    }
+

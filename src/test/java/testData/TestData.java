@@ -28,13 +28,7 @@ public class TestData {
             new User(0, "userArray2", "First2", "Last2", "user2@example.com", "pass2", "2222222222", 0)
     );
 
-    public class TestHeaders {
-        public static final Map<String, String> DEFAULT_HEADERS = Map.of(
-                "Content-Type", "application/json",
-                "Accept", "application/json"
-        );
-    }
-
+/// без использования lombok
 //    public static final Pet DEFAULT_PET = new Pet(
 //            133,
 //            new Category(2, "cat"),
@@ -43,14 +37,12 @@ public class TestData {
 //            List.of(new models.pet.Tag(2, "cat")),
 //            Status.AVAILABLE
 //    );
-//
 //    public static final Pet PET_TO_UPDATE;
 //
 //    static {
 //        PET_TO_UPDATE = new Pet();
 //        PET_TO_UPDATE.setId(134);
 //        PET_TO_UPDATE.setStatus(Status.AVAILABLE);
-
 
     public static final Pet DEFAULT_PET = Pet.builder()
             .id(132)

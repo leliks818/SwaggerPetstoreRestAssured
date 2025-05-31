@@ -1,6 +1,7 @@
-package controller;
+package controller.user;
 
 import constants.CommonConstants;
+import controller.HttpResponse;
 import io.qameta.allure.Step;
 import io.qameta.allure.restassured.AllureRestAssured;
 

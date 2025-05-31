@@ -1,5 +1,6 @@
-package controller;
+package controller.pet;
 
+import controller.HttpResponse;
 import io.qameta.allure.Step;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.http.ContentType;
@@ -32,14 +33,21 @@ public class FluentPetController {
         return new HttpResponse(response);
     }
 
-    @Step("Загрузка изображения для питомца с ID = {petId}")
-    public HttpResponse uploadPetImage(long petId, String additionalMetadata, File imageFile) {
-        Response response = given(requestSpecification)
-                .multiPart("file", imageFile)
-                .multiPart("additionalMetadata", additionalMetadata != null ? additionalMetadata : "")
-                .post("/" + petId + "/uploadImage");
+    @Step("Загрузка изображения на сервер")
+    public static HttpResponse uploadImage(File file) {
+        Response response = given()
+                .header("accept", "application/json")
+                .contentType("multipart/form-data")
+                .multiPart("file", file, "image/jpeg")
+                .when()
+                .post("https://petstore.swagger.io/v2/pet/1/uploadImage")
+                .then()
+                .extract()
+                .response();
+
         return new HttpResponse(response);
     }
+
 
     @Step("Обновление существующего питомца")
     public HttpResponse updatePet(Object pet) {
@@ -85,6 +93,7 @@ public class FluentPetController {
         return new HttpResponse(response);
     }
 
+    @Step ("удаление  питомца ")
     public HttpResponse deletePet(Pet pet) {
         Response response = given(requestSpecification)
                 //.header("api_key", apiKey)

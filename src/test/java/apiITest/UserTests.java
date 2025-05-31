@@ -1,7 +1,7 @@
 package apiITest;
 import org.junit.jupiter.api.Test;
 
-import controller.UserController;
+import controller.user.UserController;
 import io.restassured.response.Response;
 import models.ApiResponse;
 import models.User;

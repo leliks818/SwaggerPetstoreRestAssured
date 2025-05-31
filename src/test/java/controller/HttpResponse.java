@@ -1,13 +1,14 @@
 package controller;
 
 import io.qameta.allure.Step;
-import io.restassured.internal.RestAssuredResponseOptionsGroovyImpl;
 import io.restassured.response.Response;
 
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class HttpResponse {
@@ -75,20 +76,31 @@ public class HttpResponse {
         System.out.println(response.getBody().asPrettyString());
         return this;
     }
-    public Response getResponse() {
-        return response;
-    }
 
-    public String getBody() {
-        return response.asString();
-    }
+    @Step("Получение списка JSON по пути: {path}")
     public List<Map<String, Object>> getJsonList(String path) {
         return response.jsonPath().getList(path);
     }
 
+    @Step("Проверка, что поле '{fieldName}' равно {expectedValue}")
     public HttpResponse bodyFieldEquals(String fieldName, long expectedValue) {
         Number actualValue = response.jsonPath().get(fieldName);
         assertEquals(expectedValue, actualValue.longValue());
         return this;
+    }
+
+    @Step("Загрузка изображения на сервер")
+    public static HttpResponse uploadImage(File file) {
+        Response response = given()
+                .header("accept", "application/json")
+                .contentType("multipart/form-data")
+                .multiPart("file", file, "image/jpeg")
+                .when()
+                .post("https://petstore.swagger.io/v2/pet/1/uploadImage")
+                .then()
+                .extract()
+                .response();
+
+        return new HttpResponse(response);
     }
 }
