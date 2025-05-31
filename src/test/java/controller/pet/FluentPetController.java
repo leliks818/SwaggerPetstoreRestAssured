@@ -48,7 +48,6 @@ public class FluentPetController {
         return new HttpResponse(response);
     }
 
-
     @Step("Обновление существующего питомца")
     public HttpResponse updatePet(Object pet) {
         Response response = given(requestSpecification)

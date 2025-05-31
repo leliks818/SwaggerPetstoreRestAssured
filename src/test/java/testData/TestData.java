@@ -57,5 +57,4 @@ public class TestData {
             .id(1349)
             .status(Status.AVAILABLE)
             .build();
-
 }

@@ -134,4 +134,3 @@ public class PetFluentTests {
 //        // Выводим ответ сервера
 //        System.out.println("Response: " + response.asString());
 //    }
-

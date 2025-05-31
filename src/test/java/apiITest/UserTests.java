@@ -35,7 +35,6 @@ class UserTests {
 
     @Test
     void updateUserTest() {
-        // Создаём пользователя, чтобы его обновить
         userController.createUser(UPDATE_USER);
 
         Response response = userController.updateUser(UPDATE_USER.getUsername(), UPDATE_USER);
