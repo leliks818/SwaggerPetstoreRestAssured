@@ -4,9 +4,11 @@ import controller.pet.FluentPetController;
 import controller.HttpResponse;
 import models.pet.Pet;
 import models.pet.Status;
+import models.pet.Tags;
 import org.junit.jupiter.api.*;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -35,15 +37,20 @@ public class PetFluentTests {
         HttpResponse response = petController.addPet(DEFAULT_PET);
         response.statusCodeIs(200)
                 .jsonValueIs("name", DEFAULT_PET.getName())
-                .jsonValueIs("status", DEFAULT_PET.getStatus());
+                .jsonValueIs("status", String.valueOf(DEFAULT_PET.getStatus()))
+                .jsonValueIs("id", String.valueOf(DEFAULT_PET.getId()))
+                .jsonValueIs("category.id", String.valueOf(DEFAULT_PET.getCategory().getId()))
+                .jsonValueIs("category.name", DEFAULT_PET.getCategory().getName())
+                .jsonValueIs("photoUrls", DEFAULT_PET.getPhotoUrls(), String.class)
+                .jsonValueIs("tags", DEFAULT_PET.getTags(), Tags.class);
+
     }
 
     @Test
-    @DisplayName("Обновление существующего питомца")
+    @DisplayName("Обновление существующего питомца с проверками отсутствующих полей")
     public void testUpdatePet() {
         HttpResponse addResponse = petController.addPet(DEFAULT_PET)
                 .statusCodeIs(200);
-
         Long petId = Long.parseLong(addResponse.getJsonValue("id"));
         Pet petUpdate = Pet.builder()
                 .id(petId)
@@ -52,11 +59,22 @@ public class PetFluentTests {
 
         HttpResponse updateResponse = petController.updatePet(petUpdate)
                 .statusCodeIs(200)
-                .jsonValueIs("status", Status.AVAILABLE.name());
+
+                .jsonValueIs("status", Status.AVAILABLE.name())
+                .jsonValueIsNull("category.id")
+                .jsonValueIsNull("category.name")
+
+                //  если не передаем в обновлении, оно может быть null или прежним
+                .jsonValueIsNull("name")
+                // Проверяем photoUrls - если не передаем, тоже должен быть null или пустой
+                .jsonValueIsNull("photoUrls")
+                // Проверяем tags - ожидаем пустой список, если их нет
+                .jsonValueIs("tags", Collections.emptyList(), Tags.class);
 
         Long updatedId = Long.parseLong(updateResponse.getJsonValue("id"));
         assertEquals(petId, updatedId);
     }
+
 
     @Test
     @DisplayName("Поиск питомцев по статусу available с проверкой тела ответа")
