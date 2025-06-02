@@ -66,9 +66,7 @@ public class PetFluentTests {
 
                 //  если не передаем в обновлении, оно может быть null или прежним
                 .jsonValueIsNull("name")
-                // Проверяем photoUrls - если не передаем, тоже должен быть null или пустой
                 .jsonValueIsNull("photoUrls")
-                // Проверяем tags - ожидаем пустой список, если их нет
                 .jsonValueIs("tags", Collections.emptyList(), Tags.class);
 
         Long updatedId = Long.parseLong(updateResponse.getJsonValue("id"));
